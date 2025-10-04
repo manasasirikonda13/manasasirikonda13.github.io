@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Restore cache (key=cache-63ae674)
-          id: cache
-          uses: actions/cache@v4
-          with:
-            path: my-cache
-            key: cache-63ae674
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: my-cache
+          key: cache-63ae674
       
       - name: Create cache contents
         run: |
