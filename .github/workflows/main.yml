@@ -1,5 +1,6 @@
 jobs:
   test:
+    runs-on: ubuntu-latest # Fix: Added the required runner specification
     steps:
       - name: manasa.sirikonda@straive.com
         run: echo "Hello, world!"
