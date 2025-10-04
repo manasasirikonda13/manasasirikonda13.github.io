@@ -1,0 +1,24 @@
+name: Prime cache cache-63ae674 
+on: 
+  workflow_dispatch: {} # run manually from Actions UI push: branches: - main
+
+jobs:
+  test:
+    # Specify the runner environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore cache (key=cache-63ae674)
+          id: cache
+          uses: actions/cache@v4
+          with:
+            path: my-cache
+            key: cache-63ae674
+      
+      - name: Create cache contents
+        run: |
+            mkdir -p my-cache
+            echo "Primed at $(date)" > my-cache/primed.txt
+            ls -la my-cache
+      
+      - name: prime-cache-63ae674
+        run: echo "Cache hit? ${{ steps.cache.outputs.cache-hit }}"
