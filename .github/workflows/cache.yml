@@ -46,7 +46,12 @@ jobs:
       # --- Priming/Verification Step ---
       - name: prime-cache-63ae674
         run: |
-          if [ "${{ steps.cache-dependencies.outputs.cache-hit }}" == "true" ]; then
-            echo "Cache hit: ${{ steps.cache-dependencies.outputs.cache-hit }}"
+          # Use the cache-hit output from the previous step (e.g., named 'cache-dependencies')
+          # Replace 'cache-dependencies' with the actual ID you used for your actions/cache@v4 step
+          CACHE_HIT="${{ steps.cache-dependencies.outputs.cache-hit }}"
+
+          if [ "$CACHE_HIT" == "true" ]; then
+            echo "Cache hit: $CACHE_HIT"
           else
-            echo "Cache miss: ${{ steps.cache-dependencies.outputs.cache-hit }}"
+            echo "Cache miss: $CACHE_HIT"
+          fi
