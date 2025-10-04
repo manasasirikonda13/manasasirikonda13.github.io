@@ -1,24 +1,52 @@
-name: Prime cache cache-63ae674 
-on: 
-  workflow_dispatch: {} # run manually from Actions UI push: branches: - main
+name: Prime cache cache-63ae674
+on:
+  # Fix 1: Corrected YAML syntax for multiple triggers
+  workflow_dispatch: {} # run manually from Actions UI
+  push:
+    branches:
+      - main
 
 jobs:
-  test:
-    # Specify the runner environment
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Restore cache (key=cache-63ae674)
-        id: cache
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --- Dependency Setup (Example) ---
+      # Replace these steps with your actual dependency installation commands (e.g., pip install, go mod download)
+      - name: Set up Node.js (Example for npm/yarn)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      # A simple install to create the node_modules directory for the cache to target
+      - name: Install Dependencies (Example)
+        # Note: This step is typically only needed on a cache miss.
+        # In a real-world scenario, you might conditionally run this.
+        run: |
+          # Create a dummy package.json and run install to generate node_modules
+          echo '{"name": "test-project", "version": "1.0.0", "dependencies": {"is-even": "1.0.0"}}' > package.json
+          npm install
+
+      # --- Cache Step ---
+      - name: Cache Node Modules
+        id: cache-dependencies # Assign an ID to reference the output later
         uses: actions/cache@v4
         with:
-          path: my-cache
-          key: cache-63ae674
-      
-      - name: Create cache contents
-        run: |
-            mkdir -p my-cache
-            echo "Primed at $(date)" > my-cache/primed.txt
-            ls -la my-cache
-      
+          # Path to the files/directories to cache
+          path: node_modules 
+          # The required primary key for the cache
+          key: cache-63ae674-${{ runner.os }}-${{ hashFiles('package-lock.json', 'yarn.lock', 'go.sum', 'requirements.txt') }} 
+          # The key to "prime" the cache should be simpler for testing the direct requirement
+          restore-keys: |
+            cache-63ae674-${{ runner.os }}-
+            cache-63ae674-
+            
+      # --- Priming/Verification Step ---
       - name: prime-cache-63ae674
-        run: echo "Cache hit? ${{ steps.cache.outputs.cache-hit }}"
+        run: |
+          if [ "${{ steps.cache-dependencies.outputs.cache-hit }}" == "true" ]; then
+            echo "Cache hit: ${{ steps.cache-dependencies.outputs.cache-hit }}"
+          else
+            echo "Cache miss: ${{ steps.cache-dependencies.outputs.cache-hit }}"
