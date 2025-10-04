@@ -1,6 +1,18 @@
+name: Simple Email Validation Action
+
+# Triggers the workflow on push events to the 'main' branch 
+# or manually via the GitHub Actions tab (workflow_dispatch)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
   test:
-    runs-on: ubuntu-latest # Fix: Added the required runner specification
+    # Specify the runner environment
+    runs-on: ubuntu-latest
+    
     steps:
+        
       - name: manasa.sirikonda@straive.com
         run: echo "Hello, world!"
